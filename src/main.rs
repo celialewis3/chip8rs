@@ -1,4 +1,11 @@
+use std::env;
+mod ROMLoader;
+
 fn main() {
+    
+    // Get arguments from env; arg[1] is filename
+    let args: Vec<String> = env::args().collect();
+    let rom_loader = ROMLoader::new(&args[1]);
     
 }
 
@@ -11,6 +18,7 @@ fn main() {
              be performed
     Nibble : A 4-bit aggregation, with 2^4 (16) possible values;
              it can represent a single hex digit
+    ROM:   : Read-only memory
 
 */
 
@@ -21,6 +29,9 @@ fn main() {
    Each byte : 8 bits is an address
 
    Memory is write-able
+
+   The CHIP-8 program should be loaded into the machine
+   starting at the address 200
 */
 
 /*
@@ -49,7 +60,7 @@ fn main() {
 
 /* 
     Stack : LIFO push/pop data
-    The stack stores addresses : 16-bit (u16)
+    The stack stores 16 addresses : 16-bit (u16)
 
 */
 
@@ -105,6 +116,8 @@ fn main() {
 
 /* 
     Decode
+
+    The CHIP8 has 35 opcodes : two bytes long each : u16
 
     Based on the first hexadecimal number : half-byte,
     many different else statements can occur
