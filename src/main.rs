@@ -1,11 +1,24 @@
 use std::env;
-mod ROMLoader;
+
+mod romloader;
+mod cpu;
 
 fn main() {
     
-    // Get arguments from env; arg[1] is filename
+    /* Get arguments from env; arg[1] is filename
+       and create a ROM using that name */
     let args: Vec<String> = env::args().collect();
-    let rom_loader = ROMLoader::new(&args[1]);
+    let rom_loader = romloader::new(&args[1]);
+    let mut cpu = cpu::Cpu::new();
+
+    cpu.load_rom(&(rom_loader.rom))
+
+    // Emulate cycle
+
+    // Fetch opcode
+    // Decode opcode
+    // Execute opcode
+
     
 }
 
@@ -22,7 +35,8 @@ fn main() {
 
 */
 
-/* Memory is 4kB : 4096 bytes
+/* 
+   Memory is 4kB : 4096 bytes
    The index register addresses 12 bits,
    which is 4096 addresses.
 
@@ -31,7 +45,17 @@ fn main() {
    Memory is write-able
 
    The CHIP-8 program should be loaded into the machine
-   starting at the address 200
+   starting at the address 200 : 0x200 - 0xFFF
+
+   0x000 - 0x1FF Chip 8 Interpreter
+   0x050 - 0x0A0 4x5 pixel font set
+   0x200 - 0xFFF program ROM and work RAM
+*/
+
+/*
+    Registers : v
+    15 8-bit : 1 byte general purpose registers named V0, V1 .. VE
+
 */
 
 /*
@@ -121,12 +145,15 @@ fn main() {
 
     Based on the first hexadecimal number : half-byte,
     many different else statements can occur
-    - Try switch statements for this
+    - Try match statements for this and match on
+    an enum of different instructions?
 
     Mask off : binary AND the first number in the
     instruction, and have one case per number
 
     Different Cases ---
+
+    op: first nibble : the opcode : 4 bits; e.g. 0x1 = JMP
 
     x : Second nibble : looks up one of the 16 registers from v0
                         through VF
